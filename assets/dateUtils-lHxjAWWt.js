@@ -1,0 +1,1 @@
+function e(){let e=new Date;return`${e.getFullYear()}-${String(e.getMonth()+1).padStart(2,`0`)}`}export{e as t};
