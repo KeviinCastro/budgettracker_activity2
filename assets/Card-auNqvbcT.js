@@ -1,1 +1,0 @@
-import{t as e}from"./index-BLJPl3_6.js";var t=e();function n({title:e,children:n}){return(0,t.jsxs)(`div`,{className:`card`,children:[e&&(0,t.jsx)(`h3`,{className:`card-title`,children:e}),(0,t.jsx)(`div`,{className:`card-content`,children:n})]})}export{n as t};
