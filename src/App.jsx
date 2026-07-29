@@ -6,7 +6,7 @@ import AppRoutes from './router/index.jsx'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/budgettracker_activity2">
       <AppShell>
         <AppRoutes />
       </AppShell>
