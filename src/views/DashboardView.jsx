@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import StatCard from '../components/ui/StatCard.jsx'
 import SpendingTrendChart from '../components/dashboard/SpendingTrendChart.jsx'
 import SpendingByCategoryChart from '../components/dashboard/SpendingByCategoryChart.jsx'
@@ -7,12 +7,23 @@ import { COLUMN_DEFS, CATEGORIES_STORAGE_KEY } from '../constants/categoryColumn
 import { SEED_CATEGORIES, SEED_TRANSACTIONS } from '../constants/seedData.js'
 import { currentMonthKey } from '../utils/dateUtils.js'
 
+function formatMonthLabel(monthKey) {
+  const [year, month] = monthKey.split('-')
+  const date = new Date(Number(year), Number(month) - 1, 1)
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+}
 
 function DashboardView() {
   const [categories] = useLocalStorage(CATEGORIES_STORAGE_KEY, SEED_CATEGORIES)
   const [transactionsByMonth] = useLocalStorage('budgettracker.transactions', SEED_TRANSACTIONS)
 
-  const monthKey = currentMonthKey()
+  const availableMonths = useMemo(() => {
+    const keys = Object.keys(transactionsByMonth || {})
+    if (!keys.includes(currentMonthKey())) keys.push(currentMonthKey())
+    return keys.sort() // ascending, oldest -> newest
+  }, [transactionsByMonth])
+
+  const [monthKey, setMonthKey] = useState(currentMonthKey())
   const monthTransactions = transactionsByMonth[monthKey] || []
 
   const stats = useMemo(() => {
@@ -72,6 +83,18 @@ function DashboardView() {
   return (
     <div>
       <h1 id="component-view-title">Dashboard</h1>
+
+      <div className="month-tabs">
+        {availableMonths.map((key) => (
+          <button
+            key={key}
+            className={`month-tab ${key === monthKey ? 'active' : ''}`}
+            onClick={() => setMonthKey(key)}
+          >
+            {formatMonthLabel(key)}
+          </button>
+        ))}
+      </div>
 
       <div className="stat-row">
         <StatCard label="Total Balance" value={`$${stats.totalBalance.toFixed(2)}`} />
